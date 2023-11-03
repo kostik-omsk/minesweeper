@@ -1,0 +1,292 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+$black-color: #272727;
+$grey-color: #8a8a8a;
+$orange-color: #ff652f;
+$yellow-color: #ffe400;
+$green-color: #14a76c;
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  background: white;
+  font-weight: 400;
+  font-family: 'Space Mono', monospace;
+  transition: all 0.5s;
+}
+.darkmode {
+  background: $black-color;
+  .game-container {
+    border: 4px solid $grey-color;
+  }
+  .game-control {
+    background-color: #14a76c;
+    border-bottom: 4px solid $grey-color;
+  }
+}
+
+.game-container {
+  width: 480px;
+  height: 580px;
+  border: 4px solid $black-color;
+  border-radius: 5px;
+}
+
+.title {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 42px;
+  color: $orange-color;
+}
+
+.game-control {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100px;
+
+  background-color: #fff493;
+  border-bottom: 4px solid $black-color;
+  box-sizing: border-box;
+  .new-game {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    padding: 5px 0;
+    .btn-new-game {
+      box-sizing: border-box;
+      padding: 4px 8px;
+      border: 1px solid $orange-color;
+      border-radius: 4px;
+      font-family: 'Space Mono', monospace;
+      font-size: 18px;
+      font-weight: 400;
+      background-color: $black-color;
+      color: $orange-color;
+    }
+    .btn-new-game:hover {
+      background-color: white;
+      color: $black-color;
+      cursor: pointer;
+    }
+    select {
+      padding: 4px 8px;
+      border: 1px solid $orange-color;
+      border-radius: 4px;
+      background-color: $black-color;
+      font-family: 'Space Mono', monospace;
+      color: $orange-color;
+      font-size: 18px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+    option {
+      font-size: 16px;
+      font-weight: 600;
+      padding: 8px;
+      background-color: $orange-color;
+      color: $black-color;
+    }
+    .volume,
+    .result {
+      width: 30px;
+      height: 30px;
+      opacity: 0.8;
+      border: 0;
+      cursor: pointer;
+      .icons {
+        width: 30px;
+        height: 30px;
+        margin: 0 auto;
+        margin-right: 5px;
+      }
+    }
+    .darkmode {
+      --text-color: #f1f1f1;
+      --text-invert: #0f0f0f;
+      --channelText: #aaa;
+      --background: #0f0f0f;
+      --placeholderBg: #232323;
+      --placeholderGradient: rgba(255, 255, 255, 0.05);
+    }
+    // darkmode toggle btn
+    .checkbox-wrapper {
+      .tgl {
+        display: none;
+        & + .tgl-btn {
+          background: darken(#fff, 80%);
+          border-radius: 2em;
+          padding: 6px;
+          transition: all 0.4s ease;
+          outline: 0;
+          display: block;
+          width: 4em;
+          height: 1.5em;
+          position: relative;
+          cursor: pointer;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          &::before,
+          &::after {
+            position: relative;
+            display: block;
+            content: '';
+            height: 100%;
+          }
+          &::before {
+            display: none;
+            width: 50%;
+          }
+          &::after {
+            left: 0;
+            border-radius: 50%;
+            background: $orange-color;
+            width: unset;
+            aspect-ratio: 1/1;
+            transition: all 0.2s ease;
+          }
+        }
+        &:checked + .tgl-btn {
+          background: #f0f0f0;
+          &:after {
+            transform: translateX(170%);
+            background: $orange-color;
+          }
+        }
+      }
+      .icon {
+        width: 20px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-invert);
+        &_sun {
+          left: 10%;
+        }
+        &_moon {
+          right: 10%;
+        }
+      }
+    }
+  }
+
+  .info {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    gap: 10px;
+    p {
+      font-size: 25px;
+      width: 40px;
+    }
+    .mine,
+    .time,
+    .flag,
+    .moves {
+      display: flex;
+      align-items: center;
+    }
+    .icons {
+      width: 30px;
+      height: 30px;
+      margin: 0 auto;
+      margin-right: 5px;
+    }
+    input[type='range'] {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 80px;
+      height: 4px;
+      background-color: $black-color;
+      cursor: pointer;
+    }
+
+    input[type='range']::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 6px;
+      height: 14px;
+      background-color: $orange-color;
+      border: none;
+    }
+    input[type='range']:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+}
+
+.game-board {
+  position: relative;
+  width: 480px;
+  height: 480px;
+  .game-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.7);
+    font-family: 'Space Mono', monospace;
+    color: $orange-color;
+    font-size: 20px;
+    text-align: center;
+    z-index: 999;
+  }
+  .game-result {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+    z-index: 9999;
+    .title-result {
+      margin: 15px 0;
+      font-family: 'Space Mono', monospace;
+      font-size: 24px;
+    }
+    .result-list {
+      list-style: none;
+      .result-item {
+        margin-bottom: 10px;
+      }
+    }
+
+    .victory {
+      color: #14a76c;
+    }
+    .lost {
+      color: red;
+    }
+  }
+}
