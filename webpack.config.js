@@ -1,6 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const FileManagerPlugin = require('filemanager-webpack-plugin'); //Автоматическая очистка каталогов
+const FileManagerPlugin = require('filemanager-webpack-plugin'); // Автоматическая очистка каталогов
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {

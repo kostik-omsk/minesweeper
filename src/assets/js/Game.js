@@ -4,10 +4,7 @@ import flagImg from '../images/flag.png';
 import mineImg from '../images/boom2.png';
 import volumeImg from '../images/volume.png';
 import volumemuteImg from '../images/volume-mute.png';
-import clickАudio from '../sound/click.mp3';
-import boomАudio from '../sound/boom.mp3';
-import flagAudio from '../sound/flag.mp3';
-import winAudio from '../sound/win.mp3';
+import audioList from './audioList';
 import saveResult from './saveResult';
 import createAudioElement from './createAudioElement';
 
@@ -40,6 +37,7 @@ export default class Game {
     this.imagesLoaded.then(() => {
       this.init();
     });
+    this.currentSound = null;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -70,6 +68,7 @@ export default class Game {
     this.numberMoves = 0;
     this.volume = JSON.parse(localStorage.getItem('volume') || 'true');
     this.darkmode = JSON.parse(localStorage.getItem('darkmode') || 'false');
+    this.stopSound();
   }
 
   newLevel(level) {
@@ -342,13 +341,7 @@ export default class Game {
   }
 
   addFlag(row, col) {
-    this.ctx.drawImage(
-      this.flagImage,
-      col * this.cellSize,
-      row * this.cellSize,
-      this.cellSize,
-      this.cellSize,
-    );
+    this.ctx.drawImage(this.flagImage, col * this.cellSize, row * this.cellSize, this.cellSize, this.cellSize);
   }
 
   removeFlag(row, col) {
@@ -395,21 +388,30 @@ export default class Game {
     }
   }
 
-  gameOver() {
+  gameOver(row, col) {
     this.isGameover = true;
     localStorage.removeItem('gameData');
-    this.cordMin.forEach(({ row, col }) => {
-      const cell = this.board[row][col];
-      if (cell.isMine && !cell.isFlagged) {
-        this.ctx.drawImage(
-          this.mineImage,
-          col * this.cellSize,
-          row * this.cellSize,
-          this.cellSize,
-          this.cellSize,
-        );
+
+    const cell = this.board[row][col];
+    if (cell.isMine && !cell.isFlagged) {
+      this.ctx.drawImage(this.mineImage, col * this.cellSize, row * this.cellSize, this.cellSize, this.cellSize);
+    }
+    const openMinesSequentially = () => {
+      if (this.cordMin.length === 0) {
+        return;
       }
-    });
+
+      const { row, col } = this.cordMin.shift(); // Извлекаем первую ячейку с миной
+      const cell = this.board[row][col];
+
+      if (cell.isMine && !cell.isFlagged) {
+        this.ctx.drawImage(this.mineImage, col * this.cellSize, row * this.cellSize, this.cellSize, this.cellSize);
+      }
+
+      setTimeout(openMinesSequentially, 100);
+    };
+
+    openMinesSequentially();
     if (this.timer !== null) {
       clearInterval(this.timer);
       this.timer = null;
@@ -467,6 +469,15 @@ export default class Game {
     if (this.volume) {
       sound.currentTime = 0;
       sound.play();
+      this.currentSound = sound;
+    }
+  }
+
+  stopSound() {
+    if (this.currentSound) {
+      this.currentSound.pause();
+      this.currentSound.currentTime = 0;
+      this.currentSound = null;
     }
   }
 
@@ -484,8 +495,8 @@ export default class Game {
       this.numberMoves += 1;
       this.updateMovesCount();
       if (cell.isMine) {
-        this.playSound(this.boomSound);
-        this.gameOver();
+        this.playSound(createAudioElement(audioList.boom));
+        this.gameOver(row, col);
       } else {
         this.playSound(this.clickSound);
         this.revealCell(row, col);
@@ -530,10 +541,9 @@ export default class Game {
     this.rangeMines();
     this.toggleVolume(this.volume);
     this.toggleDarkMode(this.darkmode);
-    this.clickSound = createAudioElement(clickАudio);
-    this.boomSound = createAudioElement(boomАudio);
-    this.flagSound = createAudioElement(flagAudio);
-    this.winSound = createAudioElement(winAudio);
+    this.clickSound = createAudioElement(audioList.click);
+    this.flagSound = createAudioElement(audioList.flag);
+    this.winSound = createAudioElement(audioList.win);
     this.canvas.addEventListener('click', this.click.bind(this));
     this.canvas.addEventListener('contextmenu', this.clickFlag.bind(this));
   }
